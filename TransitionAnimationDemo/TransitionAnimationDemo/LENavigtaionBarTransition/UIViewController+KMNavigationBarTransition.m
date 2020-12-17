@@ -151,8 +151,12 @@
     /// （1）这里需要将titleView原先的superView对象指针保存起来，因为下面通过自定义的navigationBar pushNavigationItem，会将titleView移到自定义的bar上，
     ///     这样会导致移除自定义的过渡导航栏时，原来导航栏navigationController.navigationBar不会显示titleView
     bar.rw_titleViewSuperView = self.navigationItem.titleView.superview;
-    [bar pushNavigationItem:orginBackItem animated:NO];
-    [bar pushNavigationItem:orginTopItem animated:NO];
+    if (orginBackItem) {
+        [bar pushNavigationItem:orginBackItem animated:NO];
+    }
+    if (orginTopItem) {
+        [bar pushNavigationItem:orginTopItem animated:NO];
+    }
     
     [self.km_transitionNavigationBar removeFromSuperview];
     self.km_transitionNavigationBar = bar;

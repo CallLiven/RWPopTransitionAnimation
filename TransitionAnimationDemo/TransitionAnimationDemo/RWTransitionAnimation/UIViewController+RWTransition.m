@@ -9,6 +9,7 @@
 #import "RWSwizzle.h"
 #import "RWTranstionManager.h"
 #import "RWWeakObjectContainer.h"
+#import "UINavigationController+RWTransition.h"
 
 #import <objc/runtime.h>
 
@@ -23,24 +24,36 @@
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        RWSwizzleMethod([self class], @selector(viewDidLoad), [self class], @selector(rw_viewDidLoad));
+        RWSwizzleMethod([self class],
+                        @selector(viewDidAppear:),
+                        [self class],
+                        @selector(rw_viewDidAppear:));
+        RWSwizzleMethod([self class],
+                        @selector(viewDidDisappear:),
+                        [self class],
+                        @selector(rw_viewDidDisappear:));
     });
 }
 
-/// 添加全局返回手势
-- (void)rw_viewDidLoad {
-    if (self.navigationController && self != self.navigationController.viewControllers.firstObject) {
-        /// 虽然会有多个ViewController，但是入栈的肯定只有最外层的ViewController
-        if (self.navigationController.viewControllers.lastObject == self) {
-            [self.navigationController.view addGestureRecognizer:self.rw_fullScreenPopGestureRecognizer];
-            [self.rw_fullScreenPopGestureRecognizer addTarget:self action:@selector(handleGesture:)];
-        }
+/// 添加全局手势响应target
+- (void)rw_viewDidAppear:(BOOL)animated {
+    if (self.navigationController && self.navigationController.viewControllers.count >= 2 && self.navigationController.viewControllers.lastObject == self) {
+        [self.navigationController.rw_fullScreenPopGestureRecognizer addTarget:self action:@selector(rw_handleGesture:)];
     }
-    [self rw_viewDidLoad];
+    [self rw_viewDidAppear:animated];
 }
 
+/// 移除全局手势响应target
+- (void)rw_viewDidDisappear:(BOOL)animated {
+    if (self.navigationController) {
+        [self.navigationController.rw_fullScreenPopGestureRecognizer removeTarget:self action:@selector(rw_handleGesture:)];
+    }
+    [self rw_viewDidDisappear:animated];
+}
+
+
 /// 更新交互转场状态
-- (void)handleGesture:(UIPanGestureRecognizer *)pan {
+- (void)rw_handleGesture:(UIPanGestureRecognizer *)pan {
     static BOOL _isDragging = NO;
     CGFloat progress = [pan translationInView:self.view].x / CGRectGetWidth(self.view.frame);
     progress = MIN(1.0, MAX(0.0, progress));
@@ -168,22 +181,5 @@
 - (id<RWInteractivePopTransitionStateUpdateDelegate>)interActiveTransitionDelegate {
     return rw_objc_getAssociatedWeakObject(self, InteractivePopTransitionDelegateKey);
 }
-
-
-/// 全局手势
-- (UIPanGestureRecognizer *)rw_fullScreenPopGestureRecognizer {
-    UIPanGestureRecognizer *pan = objc_getAssociatedObject(self, _cmd);
-    if (!pan) {
-        pan = [[UIPanGestureRecognizer alloc]init];
-        pan.maximumNumberOfTouches = 1;
-        [self setRw_fullScreenPopGestureRecognizer:pan];
-    }
-    return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setRw_fullScreenPopGestureRecognizer:(UIPanGestureRecognizer *)rw_fullScreenPopGestureRecognizer {
-    objc_setAssociatedObject(self, @selector(rw_fullScreenPopGestureRecognizer), rw_fullScreenPopGestureRecognizer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 
 @end

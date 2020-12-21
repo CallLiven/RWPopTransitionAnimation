@@ -11,7 +11,8 @@
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (RWTransition)
-
+/// 自定义的全局返回手势，替换系统的返回手势
+@property (nonatomic, strong) UIPanGestureRecognizer *rw_fullScreenPopGestureRecognizer;
 @end
 
 NS_ASSUME_NONNULL_END

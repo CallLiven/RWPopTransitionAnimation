@@ -3,7 +3,7 @@
 
 ![](https://upload-images.jianshu.io/upload_images/1923392-e3be9f916cfb4c20.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
-2020年12月21日更新（详情请看最底部）
+**2020年12月21日更新（详情请看最底部）**
 
 ***
 
@@ -124,7 +124,7 @@ typedef NS_ENUM(NSInteger,RWTransitionType){
 
 
 
-### **2020年12月21日** 更新
+## **2020年12月21日** 更新
 
 内容：
 
@@ -202,4 +202,64 @@ typedef NS_ENUM(NSInteger,RWTransitionType){
 ```
 
 
+
+
+
+## **2020年12月21日** 再次更新
+
+内容：修复全局手势多次PUSH之后失效的BUG
+
+致命错误：每一个ViewController都创建一个返回手势添加到navigationController.view上，导致navigationController.view上的手势越来越多，并且这些手势互斥，最终只有最上面的手势会响应
+
+解决方法：
+
+根据系统定义的全局返回手势方式，其生命周期应该跟navigationController一致的，所以返回手势不再是viewController的生命周期内创建，会在navigationController创建的时候一并创建，而且返回手势的target是在viewDidAppear的时候修改为当前ViewController的事件，然后再viewDidDisappear的时候，再移除。必须做到一加一除，才能避免同时有多个target响应返回手势。
+
+
+
+代码：
+
+```objc
+@interface UINavigationController (RWTransition)
+/// 自定义的全局返回手势，替换系统的返回手势
+@property (nonatomic, strong) UIPanGestureRecognizer *rw_fullScreenPopGestureRecognizer;
+@end
+```
+
+```objc
+@implementation UIViewController (RWTransition)
+
++ (void)load {
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        RWSwizzleMethod([self class],
+                        @selector(viewDidAppear:),
+                        [self class],
+                        @selector(rw_viewDidAppear:));
+        RWSwizzleMethod([self class],
+                        @selector(viewDidDisappear:),
+                        [self class],
+                        @selector(rw_viewDidDisappear:));
+    });
+}
+
+/// 添加全局手势响应target
+- (void)rw_viewDidAppear:(BOOL)animated {
+    if (self.navigationController && self.navigationController.viewControllers.count >= 2 && self.navigationController.viewControllers.lastObject == self) {
+        [self.navigationController.rw_fullScreenPopGestureRecognizer addTarget:self action:@selector(rw_handleGesture:)];
+    }
+    [self rw_viewDidAppear:animated];
+}
+
+/// 移除全局手势响应target
+- (void)rw_viewDidDisappear:(BOOL)animated {
+    if (self.navigationController) {
+        [self.navigationController.rw_fullScreenPopGestureRecognizer removeTarget:self action:@selector(rw_handleGesture:)];
+    }
+    [self rw_viewDidDisappear:animated];
+}
+
+
+@end
+```
 

@@ -6,8 +6,9 @@
 //
 
 #import "UINavigationController+RWTransition.h"
-#import "RWSwizzle.h"
 #import "RWTranstionManager.h"
+#import "RWSwizzle.h"
+#import <objc/runtime.h>
 
 @implementation UINavigationController (RWTransition)
 
@@ -53,6 +54,24 @@
 
 - (void)navigationControllerDelegate {
     self.delegate = [RWTranstionManager shareInstance];
+    [self.view addGestureRecognizer:self.rw_fullScreenPopGestureRecognizer];
 }
+
+#pragma mark - Getter/Setter
+/// 全局手势
+- (UIPanGestureRecognizer *)rw_fullScreenPopGestureRecognizer {
+    UIPanGestureRecognizer *pan = objc_getAssociatedObject(self, _cmd);
+    if (!pan) {
+        pan = [[UIPanGestureRecognizer alloc]init];
+        pan.maximumNumberOfTouches = 1;
+        [self setRw_fullScreenPopGestureRecognizer:pan];
+    }
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setRw_fullScreenPopGestureRecognizer:(UIPanGestureRecognizer *)rw_fullScreenPopGestureRecognizer {
+    objc_setAssociatedObject(self, @selector(rw_fullScreenPopGestureRecognizer), rw_fullScreenPopGestureRecognizer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 
 @end

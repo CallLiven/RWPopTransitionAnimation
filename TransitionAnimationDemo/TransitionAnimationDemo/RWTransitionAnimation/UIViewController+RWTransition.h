@@ -32,8 +32,6 @@ typedef NS_ENUM(NSInteger,RWTransitionType){
 
 
 @interface UIViewController (RWTransition)
-/// 自定义的全局返回手势，替换系统的返回手势
-@property (nonatomic, strong) UIPanGestureRecognizer *rw_fullScreenPopGestureRecognizer;
 /// 转场动画类型： 默认是RWTransitionType_TuoTiao
 @property (nonatomic, assign) RWTransitionType  transitionType;
 /// 动画执行时间：默认是 0.4f

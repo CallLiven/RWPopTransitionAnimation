@@ -1,11 +1,11 @@
 # RWPopTransitionAnimation
 轻松接入各种转场动画
 
-
-
 ![](https://upload-images.jianshu.io/upload_images/1923392-e3be9f916cfb4c20.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
+2020年12月21日更新（详情请看最底部）
 
+***
 
 RWPopTransitionAnimation框架实现讲解请查看[文章](https://www.jianshu.com/p/79ef0866c707)
 
@@ -71,7 +71,7 @@ bvc.transitionType = RWTransitionType_TuoTiao;
 
 
 
-# **如果框架定义的转场动画，不能满足需求，可以自定义轻松添加转场动画效果**
+# **如果框架定义的转场动画，不能满足需求，可以自定义，轻松添加转场动画效果**
 
 （1）创建动画类继承于`RWBaseAnimation`
 
@@ -118,6 +118,87 @@ typedef NS_ENUM(NSInteger,RWTransitionType){
             break;
     }
 }
+```
+
+
+
+
+
+### **2020年12月21日** 更新
+
+内容：
+
+**（1）兼容多个分页滑动，比如像头条。**
+
+**（2）手势冲突解决**
+
+**（3）正确识别滑动动作，避免上下滑动出现返回转场的误动作**
+
+代码：
+
+**（1）创建一个UIScrollView的分类（UIScrollView+RWTransition），处理手势互斥及识别滑动动作**
+
+```objc
+@implementation UIScrollView (RWTransition)
+
+/// 本手势是否和other另外一个手势共存
+/// 只有有一个手势，这个代理方法返回了YES，那么就是共存（也就是都有效）
+-(BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    /// 首先判断otherGestureRecognizer是不是系统pop手势
+    if ([otherGestureRecognizer.view isKindOfClass:NSClassFromString(@"UILayoutContainerView")]) {
+        /// 再判断系统手势的state是began还是fail，同时判断scrollView的位置是不是正好在最左边
+        if (otherGestureRecognizer.state == UIGestureRecognizerStateBegan || otherGestureRecognizer.state == UIGestureRecognizerStatePossible) {
+            UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)otherGestureRecognizer;
+            CGPoint point = [pan translationInView:otherGestureRecognizer.view];
+            /// 为了解决上下滑动触发返回手势的 误触发
+            /// 添加 fabs(point.x) >= fabs(point.y)条件
+            /// 判断上下滑动还是左右滑动：x方向的滑动距离 大于等于 y方向的滑动距离 则是左右滑动
+            if (point.x > 0 && (fabs(point.x) >= fabs(point.y)) && self.contentOffset.x <= 0) {
+                return YES;
+            }
+        }
+    }
+    return NO;
+}
+
+
+/// 处理兼容多手势的时候
+/// 在右滑返回的时候，ScrollView也会滑动
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
+    if ([gestureRecognizer isKindOfClass:UIPanGestureRecognizer.class]) {
+        UIPanGestureRecognizer *pan = (UIPanGestureRecognizer *)gestureRecognizer;
+        CGPoint point = [pan translationInView:self];
+        UIGestureRecognizerState state = gestureRecognizer.state;
+        if (UIGestureRecognizerStateBegan == state || UIGestureRecognizerStatePossible == state) {
+            if (point.x > 0 && self.contentOffset.x <= 0) {
+                return NO;
+            }
+        }
+    }
+    return YES;
+}
+
+@end
+```
+
+**（2）在给ViewController添加滑动手势的时候，添加多一个条件。目的出现多个ViewController的时候不会重复添加滑动返回手势**
+
+```objc
+@implementation UIViewController (RWTransition)
+  
+/// 添加全局返回手势
+- (void)rw_viewDidLoad {
+    if (self.navigationController && self != self.navigationController.viewControllers.firstObject) {
+        /// 虽然会有多个ViewController，但是入栈的肯定只有最外层的ViewController
+        if (self.navigationController.viewControllers.lastObject == self) {
+            [self.navigationController.view addGestureRecognizer:self.rw_fullScreenPopGestureRecognizer];
+            [self.rw_fullScreenPopGestureRecognizer addTarget:self action:@selector(handleGesture:)];
+        }
+    }
+    [self rw_viewDidLoad];
+}
+
+@end
 ```
 
 

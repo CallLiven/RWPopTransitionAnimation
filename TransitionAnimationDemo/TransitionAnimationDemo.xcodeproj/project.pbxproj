@@ -10,6 +10,7 @@
 		333E0F7E258894A700DF4173 /* UINavigationBar+KMNavigationBarTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 333E0F77258894A700DF4173 /* UINavigationBar+KMNavigationBarTransition.m */; };
 		333E0F7F258894A700DF4173 /* UINavigationController+KMNavigationBarTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 333E0F78258894A700DF4173 /* UINavigationController+KMNavigationBarTransition.m */; };
 		333E0F81258894A700DF4173 /* UIViewController+KMNavigationBarTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 333E0F7B258894A700DF4173 /* UIViewController+KMNavigationBarTransition.m */; };
+		335D900A2590474700964B70 /* UIScrollView+RWTransition.m in Sources */ = {isa = PBXBuildFile; fileRef = 335D90092590474700964B70 /* UIScrollView+RWTransition.m */; };
 		33920FC925876B6D009126A4 /* RWTouTiaoAnimation.m in Sources */ = {isa = PBXBuildFile; fileRef = 33920FC825876B6D009126A4 /* RWTouTiaoAnimation.m */; };
 		33B2BB71258A03E300B13F17 /* RWWeakObjectContainer.m in Sources */ = {isa = PBXBuildFile; fileRef = 33B2BB70258A03E200B13F17 /* RWWeakObjectContainer.m */; };
 		33B2BB7A258AF18500B13F17 /* RWTitleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 33B2BB79258AF18500B13F17 /* RWTitleView.m */; };
@@ -58,6 +59,8 @@
 		333E0F78258894A700DF4173 /* UINavigationController+KMNavigationBarTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UINavigationController+KMNavigationBarTransition.m"; sourceTree = "<group>"; };
 		333E0F7B258894A700DF4173 /* UIViewController+KMNavigationBarTransition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+KMNavigationBarTransition.m"; sourceTree = "<group>"; };
 		333E0F7C258894A700DF4173 /* UIViewController+KMNavigationBarTransition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+KMNavigationBarTransition.h"; sourceTree = "<group>"; };
+		335D90082590474700964B70 /* UIScrollView+RWTransition.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+RWTransition.h"; sourceTree = "<group>"; };
+		335D90092590474700964B70 /* UIScrollView+RWTransition.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+RWTransition.m"; sourceTree = "<group>"; };
 		33920FC725876B6D009126A4 /* RWTouTiaoAnimation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RWTouTiaoAnimation.h; sourceTree = "<group>"; };
 		33920FC825876B6D009126A4 /* RWTouTiaoAnimation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RWTouTiaoAnimation.m; sourceTree = "<group>"; };
 		33B2BB6F258A03E200B13F17 /* RWWeakObjectContainer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RWWeakObjectContainer.h; sourceTree = "<group>"; };
@@ -225,6 +228,8 @@
 				33F3730925836BB400A569A7 /* UINavigationController+RWTransition.m */,
 				33F37314258375A600A569A7 /* UIViewController+RWTransition.h */,
 				33F37315258375A600A569A7 /* UIViewController+RWTransition.m */,
+				335D90082590474700964B70 /* UIScrollView+RWTransition.h */,
+				335D90092590474700964B70 /* UIScrollView+RWTransition.m */,
 			);
 			path = RWTransitionAnimation;
 			sourceTree = "<group>";
@@ -363,6 +368,7 @@
 				33F3730A25836BB400A569A7 /* UINavigationController+RWTransition.m in Sources */,
 				33F372972581B43700A569A7 /* main.m in Sources */,
 				33B2BB71258A03E300B13F17 /* RWWeakObjectContainer.m in Sources */,
+				335D900A2590474700964B70 /* UIScrollView+RWTransition.m in Sources */,
 				33920FC925876B6D009126A4 /* RWTouTiaoAnimation.m in Sources */,
 				333E0F81258894A700DF4173 /* UIViewController+KMNavigationBarTransition.m in Sources */,
 				333E0F7F258894A700DF4173 /* UINavigationController+KMNavigationBarTransition.m in Sources */,

@@ -30,8 +30,11 @@
 /// 添加全局返回手势
 - (void)rw_viewDidLoad {
     if (self.navigationController && self != self.navigationController.viewControllers.firstObject) {
-        UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc]initWithTarget:self action:@selector(handleGesture:)];
-        [self.view addGestureRecognizer:pan];
+        /// 虽然会有多个ViewController，但是入栈的肯定只有最外层的ViewController
+        if (self.navigationController.viewControllers.lastObject == self) {
+            [self.navigationController.view addGestureRecognizer:self.rw_fullScreenPopGestureRecognizer];
+            [self.rw_fullScreenPopGestureRecognizer addTarget:self action:@selector(handleGesture:)];
+        }
     }
     [self rw_viewDidLoad];
 }
@@ -50,8 +53,7 @@
             return;
         }
     }
-    
-    
+
     if (pan.state == UIGestureRecognizerStateBegan) {
         _isDragging = YES;
         self.interactivePopTransition = [[UIPercentDrivenInteractiveTransition alloc]init];
@@ -165,6 +167,22 @@
 
 - (id<RWInteractivePopTransitionStateUpdateDelegate>)interActiveTransitionDelegate {
     return rw_objc_getAssociatedWeakObject(self, InteractivePopTransitionDelegateKey);
+}
+
+
+/// 全局手势
+- (UIPanGestureRecognizer *)rw_fullScreenPopGestureRecognizer {
+    UIPanGestureRecognizer *pan = objc_getAssociatedObject(self, _cmd);
+    if (!pan) {
+        pan = [[UIPanGestureRecognizer alloc]init];
+        pan.maximumNumberOfTouches = 1;
+        [self setRw_fullScreenPopGestureRecognizer:pan];
+    }
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setRw_fullScreenPopGestureRecognizer:(UIPanGestureRecognizer *)rw_fullScreenPopGestureRecognizer {
+    objc_setAssociatedObject(self, @selector(rw_fullScreenPopGestureRecognizer), rw_fullScreenPopGestureRecognizer, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 

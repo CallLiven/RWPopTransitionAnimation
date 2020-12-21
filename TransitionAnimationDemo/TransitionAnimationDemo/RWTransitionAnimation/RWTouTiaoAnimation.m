@@ -26,6 +26,9 @@
     /// 将要fromVC的截图添加到底部
     [[toVC.navigationController.view superview] insertSubview:fromVC.snapshot belowSubview:toVC.navigationController.view];
 
+    [toVC.navigationController.view superview].backgroundColor = UIColor.blackColor;
+    fromVC.navigationController.view.backgroundColor = UIColor.blackColor;
+    
     /// 设置切入视图的初始位置：屏幕最右边
     toVC.navigationController.view.transform = CGAffineTransformMakeTranslation(CGRectGetWidth(bounds), 0);
     /// 如果切出的视图是有tabBarController，那么就将其隐藏

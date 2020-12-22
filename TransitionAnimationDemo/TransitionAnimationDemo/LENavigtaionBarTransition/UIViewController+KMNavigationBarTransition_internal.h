@@ -23,7 +23,11 @@
 
 #import <UIKit/UIKit.h>
 
+typedef void(^DynamicNavigationBarStyleBlock)(void);
+
 @interface UIViewController (KMNavigationBarTransition_internal)
+/// 用于动态修改状态栏的样式
+@property (nonatomic, copy  ) DynamicNavigationBarStyleBlock le_navigationBarStyleBlock;
 /// PUSH过渡的navigationBar
 @property (nonatomic, strong) UINavigationBar *km_transitionNavigationBar;
 

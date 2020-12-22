@@ -85,15 +85,21 @@
     /// PUSH的界面VC，比如：界面B
     UIViewController *transitionViewController = self.navigationController.km_transitionContextToViewController;
     if (self.km_transitionNavigationBar) {
-        /// （2）将titleView添加到原来的导航栏上
-        if (self.km_transitionNavigationBar.topItem.titleView) {
-            [self.km_transitionNavigationBar.rw_titleViewSuperView addSubview:self.km_transitionNavigationBar.topItem.titleView];
+        /// 如果导航栏样式是动态修改的，可以通过block设置导航栏样式，不再设置成假导航栏的样式
+        if (self.le_navigationBarStyleBlock) {
+            self.le_navigationBarStyleBlock();
         }
-        self.navigationController.navigationBar.titleTextAttributes = self.km_transitionNavigationBar.titleTextAttributes;
-        self.navigationController.navigationBar.barTintColor = self.km_transitionNavigationBar.barTintColor;
-        self.navigationController.navigationBar.tintColor = self.km_transitionNavigationBar.tintColor;
-        [self.navigationController.navigationBar setBackgroundImage:[self.km_transitionNavigationBar backgroundImageForBarMetrics:UIBarMetricsDefault] forBarMetrics:UIBarMetricsDefault];
-        [self.navigationController.navigationBar setShadowImage:self.km_transitionNavigationBar.shadowImage];
+        else{
+            /// （2）将titleView添加到原来的导航栏上
+            if (self.km_transitionNavigationBar.topItem.titleView) {
+                [self.km_transitionNavigationBar.rw_titleViewSuperView addSubview:self.km_transitionNavigationBar.topItem.titleView];
+            }
+            self.navigationController.navigationBar.titleTextAttributes = self.km_transitionNavigationBar.titleTextAttributes;
+            self.navigationController.navigationBar.barTintColor = self.km_transitionNavigationBar.barTintColor;
+            self.navigationController.navigationBar.tintColor = self.km_transitionNavigationBar.tintColor;
+            [self.navigationController.navigationBar setBackgroundImage:[self.km_transitionNavigationBar backgroundImageForBarMetrics:UIBarMetricsDefault] forBarMetrics:UIBarMetricsDefault];
+            [self.navigationController.navigationBar setShadowImage:self.km_transitionNavigationBar.shadowImage];
+        }
         
         if (!transitionViewController || [transitionViewController isEqual:self]) {
 //            NSLog(@"移除假的导航栏 %@",NSStringFromClass(self.class));
@@ -177,6 +183,15 @@
 
 - (void)setKm_transitionNavigationBar:(UINavigationBar *)navigationBar {
     objc_setAssociatedObject(self, @selector(km_transitionNavigationBar), navigationBar, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+/// 动态修改导航栏样式
+- (DynamicNavigationBarStyleBlock)le_navigationBarStyleBlock {
+    return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setLe_navigationBarStyleBlock:(DynamicNavigationBarStyleBlock)le_navigationBarStyleBlock {
+    objc_setAssociatedObject(self, @selector(le_navigationBarStyleBlock), le_navigationBarStyleBlock, OBJC_ASSOCIATION_COPY);
 }
 
 

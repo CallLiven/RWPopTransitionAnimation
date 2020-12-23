@@ -90,6 +90,10 @@
         }
         self.interactivePopTransition = nil;
     }
+    else if (pan.state == UIGestureRecognizerStateFailed) {
+        [self.interactivePopTransition cancelInteractiveTransition];
+        self.interactivePopTransition = nil;
+    }
 }
 
 

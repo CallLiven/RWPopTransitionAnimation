@@ -94,6 +94,7 @@
             if (self.km_transitionNavigationBar.topItem.titleView) {
                 [self.km_transitionNavigationBar.rw_titleViewSuperView addSubview:self.km_transitionNavigationBar.topItem.titleView];
             }
+            [self.navigationController.navigationBar setTranslucent:self.km_transitionNavigationBar.translucent];
             self.navigationController.navigationBar.titleTextAttributes = self.km_transitionNavigationBar.titleTextAttributes;
             self.navigationController.navigationBar.barTintColor = self.km_transitionNavigationBar.barTintColor;
             self.navigationController.navigationBar.tintColor = self.km_transitionNavigationBar.tintColor;
@@ -150,6 +151,7 @@
     bar.barTintColor = self.navigationController.navigationBar.barTintColor;
     bar.shadowImage = self.navigationController.navigationBar.shadowImage;
     bar.titleTextAttributes = self.navigationController.navigationBar.titleTextAttributes;
+    [bar setTranslucent:self.navigationController.navigationBar.translucent];
     [bar setBackgroundImage:[self.navigationController.navigationBar backgroundImageForBarMetrics:UIBarMetricsDefault] forBarMetrics:UIBarMetricsDefault];
     
     UINavigationItem *orginBackItem = self.navigationController.navigationBar.backItem;

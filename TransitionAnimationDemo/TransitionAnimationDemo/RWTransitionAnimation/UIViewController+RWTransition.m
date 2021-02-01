@@ -91,6 +91,7 @@
         self.interactivePopTransition = nil;
     }
     else if (pan.state == UIGestureRecognizerStateFailed) {
+        _isDragging = NO;
         [self.interactivePopTransition cancelInteractiveTransition];
         self.interactivePopTransition = nil;
     }
